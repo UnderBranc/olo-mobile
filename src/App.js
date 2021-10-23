@@ -15,7 +15,7 @@ function App() {
   const [responseMsg, setResponseMsg] = useState("")
   const [photoError, setPhotoError] = useState(Boolean)
   const [binInfo, setBinInfo] = useState({})
-  const [fs, setFs] = useState("")
+  const [errorId, setErrorId] = useState(Boolean)
   useEffect(() => {
 
     let x = window.location.pathname.split("/")[2]
@@ -27,26 +27,33 @@ function App() {
     axios.request(options).then(function (response) {
       setNotificationId(response.data['id'])
       setResponseMsg(response.data['message'])
+      if (response.status != 200) {
+        console.log("ti som")
+        setErrorId(true)
+      } else {
+        url = 'http://20.105.168.42/api/dashboard/bins/' + x
+        const options2 = { method: 'GET', url: url };
+        axios.request(options2).then(function (response) {
+          setBinInfo(response.data)
+          setNotificationOk(true)
+        }).catch(function (error) {
+          setErrorId(true)
+          setResponseMsg("OMG, Errorik.")
+        });
 
+      }
     }).catch(function (error) {
+      setErrorId(true)
       setResponseMsg("OMG, Errorik.")
     });
 
-    url = 'http://20.105.168.42/api/dashboard/bins/' + x
-    const options2 = { method: 'GET', url: url };
-    axios.request(options2).then(function (response) {
-      setBinInfo(response.data)
-      setNotificationOk(true)
-    }).catch(function (error) {
-      setResponseMsg("OMG, Errorik.")
-    });
+
   }, []);
 
 
   const handleFileSelected = (e) => {
     const files = e.target.files[0]
     const form = new FormData();
-    console.log(files)
     form.append("file", files);
     axios.post(
       'http://20.105.168.42/api/frontend/notify/' + notification_id + '/image',
@@ -56,7 +63,7 @@ function App() {
           "Content-type": "multipart/form-data"
         },
       }
-      )
+    )
       .then((res) => {
         setPhotoUploaded(true)
         setPhotoError(false)
@@ -64,66 +71,73 @@ function App() {
       .catch(err => {
         setPhotoError(true)
       })
-    setFs(files.name)
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        {!notificationOk ? (
-          <div>
-            <p>
-              Thanks for notifying us!
-            </p>
-            <img src={logo} className="App-logo" alt="logo" />
-          </div>
-        ) :
-          (
+        {errorId ? (
+                    <div>
+                    <p>
+                      A STE V PICI.
+                    </p>
+                    <img src={logo} className="App-logo" alt="logo" />
+                  </div>
+        ):(
+          !notificationOk ? (
             <div>
               <p>
                 Thanks for notifying us!
               </p>
               <img src={logo} className="App-logo" alt="logo" />
-              <p>
-                Garbage Bin additional info.
-              </p>
-              <div style={{ 'margin': '5%' }}>
+            </div>
+          ) :
+            (
+              <div>
                 <p>
-                  Bin id: <code>{bin_id}</code>
+                  Thanks for notifying us!
                 </p>
-                <ListGroup>
-                  <ListGroup.Item><b>Last pickup: </b>23.10.2021</ListGroup.Item>
-                  <ListGroup.Item><b>Location: </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
-                  <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
-                  <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
-                </ListGroup>
-                {fs ? (<div>{fs}</div>) : (<div></div>)}
-              </div>
-
-              {photoUploaded ?
-                (
-                  photoError ? (
-                    <div>
-                      <p><b>Error with photo.</b></p>
-                    </div>
+                <img src={logo} className="App-logo" alt="logo" />
+                <p>
+                  Garbage Bin additional info.
+                </p>
+                <div style={{ 'margin': '5%' }}>
+                  <p>
+                    Bin id: <code>{bin_id}</code>
+                  </p>
+                  <ListGroup>
+                    <ListGroup.Item><b>Last pickup: </b>23.10.2021</ListGroup.Item>
+                    <ListGroup.Item><b>Location: </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
+                    <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
+                    <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
+                  </ListGroup>
+                </div>
+  
+                {photoUploaded ?
+                  (
+                    photoError ? (
+                      <div>
+                        <p><b>Error with photo.</b></p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p><b>Thanks for your photo.</b></p>
+                      </div>
+                    )
+  
                   ) : (
                     <div>
-                      <p><b>Thanks for your photo.</b></p>
+                      <p><b>Help us</b></p>
+                      <p>Take a picture of the bin.</p>
+                      <input accept="image/*" capture="environment" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                      <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
                     </div>
-                  )
+                  )}
+              </div>
+            )
+          
 
-                ) : (
-                  <div>
-                    <p><b>Help us</b></p>
-                    <p>Take a picture of the bin.</p>
-                    <input accept="image/*" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
-                    <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
-                  </div>
-
-                )}
-            </div>
-          )
-        }
+        )}
       </header >
     </div >
   );
