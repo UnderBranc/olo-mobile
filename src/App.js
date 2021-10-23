@@ -13,7 +13,7 @@ function App() {
   const [notificationOk, setNotificationOk] = useState(Boolean)
   const [photoUploaded, setPhotoUploaded] = useState(Boolean)
   const [responseMsg, setResponseMsg] = useState("")
-
+  const [photoError, setPhotoError] = useState(Boolean)
   const [binInfo, setBinInfo] = useState({})
   useEffect(() => {
 
@@ -56,11 +56,11 @@ function App() {
       }
     )
       .then((res) => {
-        console.log("image done.")
-        console.log(res.data)
+        setPhotoUploaded(true)
+        setPhotoError(false)
       })
       .catch(err => {
-        console.log(err);
+        setPhotoError(true)
       })
   }
 
@@ -86,27 +86,42 @@ function App() {
               </p>
               <div style={{ 'margin': '5%' }}>
                 <p>
-                  Bin id : <code>{bin_id}</code>
+                  Bin id: <code>{bin_id}</code>
                 </p>
                 <ListGroup>
-                  <ListGroup.Item><b>Last pickup : </b>23.10.2021</ListGroup.Item>
-                  <ListGroup.Item><b>Location : </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
-                  <ListGroup.Item><b>Garbage type : </b>{binInfo[0]['waste_type']}</ListGroup.Item>
-                  <ListGroup.Item><b>Bin type : </b>{binInfo[0]['material']}</ListGroup.Item>
+                  <ListGroup.Item><b>Last pickup: </b>23.10.2021</ListGroup.Item>
+                  <ListGroup.Item><b>Location: </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
+                  <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
+                  <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
                 </ListGroup>
               </div>
 
-              <div>
-                <p><b>Help us</b></p>
-                <p>Take a picture of the bin.</p>
-                <input type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
-                <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
-              </div>
+              {photoUploaded ?
+                (
+                  photoError ? (
+                    <div>
+                      <p><b>Error with photo.</b></p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p><b>Thanks for your photo.</b></p>
+                    </div>
+                  )
+
+                ) : (
+                  <div>
+                    <p><b>Help us</b></p>
+                    <p>Take a picture of the bin.</p>
+                    <input type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                    <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
+                  </div>
+
+                )}
             </div>
           )
         }
-      </header>
-    </div>
+      </header >
+    </div >
   );
 }
 
