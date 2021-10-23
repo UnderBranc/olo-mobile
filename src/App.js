@@ -1,22 +1,22 @@
-import logo from './logo.svg';
+import logo from './logo2.svg';
 import './App.css';
-
+import React, { useState, useEffect } from 'react';
 function App() {
+
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `You clicked ${count} times`;
+  },[]);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          <code>Thanks for notifying us!</code>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <img src={logo} className="App-logo" alt="logo" />
       </header>
     </div>
   );
