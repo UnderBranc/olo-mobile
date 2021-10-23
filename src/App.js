@@ -112,7 +112,7 @@ function App() {
                   <div>
                     <p><b>Help us</b></p>
                     <p>Take a picture of the bin.</p>
-                    <input type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                    <input accept="image/*" capture="environment" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
                     <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
                   </div>
 
