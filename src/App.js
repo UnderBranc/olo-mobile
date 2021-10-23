@@ -46,7 +46,7 @@ function App() {
   const handleFileSelected = (e) => {
     const files = e.target.files[0]
     const form = new FormData();
-    setFs(files.name)
+    console.log(files)
     form.append("file", files);
     axios.post(
       'http://20.105.168.42/api/frontend/notify/' + notification_id + '/image',
@@ -56,7 +56,7 @@ function App() {
           "Content-type": "multipart/form-data"
         },
       }
-    )
+      )
       .then((res) => {
         setPhotoUploaded(true)
         setPhotoError(false)
@@ -64,6 +64,7 @@ function App() {
       .catch(err => {
         setPhotoError(true)
       })
+    setFs(files.name)
   }
 
   return (
@@ -115,7 +116,7 @@ function App() {
                   <div>
                     <p><b>Help us</b></p>
                     <p>Take a picture of the bin.</p>
-                    <input accept="image/*" capture="environment" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                    <input accept="image/*" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
                     <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
                   </div>
 
