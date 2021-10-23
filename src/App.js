@@ -15,6 +15,7 @@ function App() {
   const [responseMsg, setResponseMsg] = useState("")
   const [photoError, setPhotoError] = useState(Boolean)
   const [binInfo, setBinInfo] = useState({})
+  const [fs, setFs] = useState("")
   useEffect(() => {
 
     let x = window.location.pathname.split("/")[2]
@@ -45,6 +46,7 @@ function App() {
   const handleFileSelected = (e) => {
     const files = e.target.files[0]
     const form = new FormData();
+    setFs(files.name)
     form.append("file", files);
     axios.post(
       'http://20.105.168.42/api/frontend/notify/' + notification_id + '/image',
@@ -94,6 +96,7 @@ function App() {
                   <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
                   <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
                 </ListGroup>
+                {fs ? (<div>{fs}</div>) : (<div></div>)}
               </div>
 
               {photoUploaded ?
