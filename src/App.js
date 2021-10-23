@@ -18,32 +18,51 @@ function App() {
   useEffect(() => {
 
     let x = window.location.pathname.split("/")[2]
-    
-    setBinId(x)   
 
-    let url = 'http://20.105.168.42/api/frontend/notify/'+x
-    const options = {method: 'GET', url: url};
+    setBinId(x)
+
+    let url = 'http://20.105.168.42/api/frontend/notify/' + x
+    const options = { method: 'GET', url: url };
     axios.request(options).then(function (response) {
       setNotificationId(response.data['id'])
       setResponseMsg(response.data['message'])
-      setNotificationOk(true)
+
     }).catch(function (error) {
       setResponseMsg("OMG, Errorik.")
     });
 
-    url = 'http://20.105.168.42/api/dashboard/bins/'+x
-    const options2 = {method: 'GET', url: url};
+    url = 'http://20.105.168.42/api/dashboard/bins/' + x
+    const options2 = { method: 'GET', url: url };
     axios.request(options2).then(function (response) {
       setBinInfo(response.data)
+      setNotificationOk(true)
     }).catch(function (error) {
       setResponseMsg("OMG, Errorik.")
     });
   }, []);
 
-  const onButtonClick = () => {
-    // `current` points to the mounted file input element
-    inputFile.current.click();
-  };
+
+  const handleFileSelected = (e) => {
+    const files = e.target.files[0]
+    const form = new FormData();
+    form.append("file", files);
+    axios.post(
+      'http://20.105.168.42/api/frontend/notify/' + notification_id + '/image',
+      form,
+      {
+        headers: {
+          "Content-type": "multipart/form-data"
+        },
+      }
+    )
+      .then((res) => {
+        console.log("image done.")
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   return (
     <div className="App">
@@ -58,9 +77,9 @@ function App() {
         ) :
           (
             <div>
-                          <p>
-              Thanks for notifying us!
-            </p>
+              <p>
+                Thanks for notifying us!
+              </p>
               <img src={logo} className="App-logo" alt="logo" />
               <p>
                 Garbage Bin additional info.
@@ -80,8 +99,8 @@ function App() {
               <div>
                 <p><b>Help us</b></p>
                 <p>Take a picture of the bin.</p>
-                <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} />
-                <Button onClick={onButtonClick} variant="success">Upload</Button>{' '}
+                <input type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
               </div>
             </div>
           )
