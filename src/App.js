@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup'
 import axios from "axios";
+import Spinner from 'react-bootstrap/Spinner'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
   const [photoError, setPhotoError] = useState(Boolean)
   const [binInfo, setBinInfo] = useState({})
   const [errorId, setErrorId] = useState(Boolean)
+  const [uploading, setUploading] = useState(Boolean)
   useEffect(() => {
 
     let x = window.location.pathname.split("/")[2]
@@ -48,7 +50,6 @@ function App() {
       setResponseMsg("OMG, Errorik.")
     });
 
-
   }, []);
 
 
@@ -56,6 +57,7 @@ function App() {
     const files = e.target.files[0]
     const form = new FormData();
     form.append("file", files);
+    setUploading(true)
     axios.post(
       'http://20.105.168.42/api/frontend/notify/' + notification_id + '/image',
       form,
@@ -67,10 +69,12 @@ function App() {
     )
       .then((res) => {
         setPhotoUploaded(true)
+        setUploading(false)
         setPhotoError(false)
       })
       .catch(err => {
         setPhotoError(true)
+        setUploading(false)
       })
   }
 
@@ -88,9 +92,20 @@ function App() {
             <img src={logo} className="App-logo" alt="logo" />
           </div>
         ) : (
+          photoUploaded || uploading ? (
 
-          photoUploaded ? (
-            <div>
+            uploading ? (
+
+              <div>
+              <p>
+                <b>Uploading photo...</b>
+              </p>
+              <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+            </div>
+            ) : (
+              <div>
               <p>
                 <b>Thank you for notifiying us!</b>
               </p>
@@ -99,6 +114,8 @@ function App() {
               </p>
               <img src={check} className="App-logo" alt="logo" />
             </div>
+            ) 
+            
           ) : (
             !notificationOk ? (
               <div>
@@ -151,7 +168,6 @@ function App() {
                     )}
                 </div>
               )
-
           )
         )}
 
