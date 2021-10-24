@@ -97,25 +97,25 @@ function App() {
             uploading ? (
 
               <div>
-              <p>
-                <b>Uploading photo...</b>
-              </p>
-              <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-            </div>
+                <p>
+                  <b>Uploading photo...</b>
+                </p>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
             ) : (
               <div>
-              <p>
-                <b>Thank you for notifiying us!</b>
-              </p>
-              <p>
-                You have positively impacted the enviroment.
-              </p>
-              <img src={check} className="App-logo" alt="logo" />
-            </div>
-            ) 
-            
+                <p>
+                  <b>Thank you for notifiying us!</b>
+                </p>
+                <p>
+                  You have positively impacted the enviroment.
+                </p>
+                <img src={check} className="App-logo" alt="logo" />
+              </div>
+            )
+
           ) : (
             !notificationOk ? (
               <div>
