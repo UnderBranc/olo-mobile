@@ -1,4 +1,5 @@
 import logo from './logo2.svg';
+import check from './checkmark.svg';
 import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
@@ -77,67 +78,83 @@ function App() {
     <div className="App">
       <header className="App-header">
         {errorId ? (
-                    <div>
-                    <p>
-                      A STE V PICI.
-                    </p>
-                    <img src={logo} className="App-logo" alt="logo" />
-                  </div>
-        ):(
-          !notificationOk ? (
+          <div>
+            <p>
+              This bin ID is not valid.
+            </p>
+            <p>
+              Try scanning the QR code again.
+            </p>
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
+        ) : (
+
+          photoUploaded ? (
             <div>
               <p>
-                Thanks for notifying us!
+                <b>Thank you for notifiying us!</b>
               </p>
-              <img src={logo} className="App-logo" alt="logo" />
+              <p>
+                You have positively impacted the enviroment.
+              </p>
+              <img src={check} className="App-logo" alt="logo" />
             </div>
-          ) :
-            (
+          ) : (
+            !notificationOk ? (
               <div>
                 <p>
                   Thanks for notifying us!
                 </p>
                 <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                  Garbage Bin additional info.
-                </p>
-                <div style={{ 'margin': '5%' }}>
+              </div>
+            ) :
+              (
+                <div>
                   <p>
-                    Bin id: <code>{bin_id}</code>
+                    Thanks for notifying us!
                   </p>
-                  <ListGroup>
-                    <ListGroup.Item><b>Last pickup: </b>23.10.2021</ListGroup.Item>
-                    <ListGroup.Item><b>Location: </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
-                    <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
-                    <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
-                  </ListGroup>
-                </div>
-  
-                {photoUploaded ?
-                  (
-                    photoError ? (
-                      <div>
-                        <p><b>Error with photo.</b></p>
-                      </div>
+                  <img src={logo} className="App-logo" alt="logo" />
+                  <p>
+                    Garbage Bin additional info.
+                  </p>
+                  <div style={{ 'margin': '5%' }}>
+                    <p>
+                      Bin id: <code>{bin_id}</code>
+                    </p>
+                    <ListGroup>
+                      <ListGroup.Item><b>Last pickup: </b>23.10.2021</ListGroup.Item>
+                      <ListGroup.Item><b>Location: </b>{binInfo[0]['city_part']}, {binInfo[0]['street']} {binInfo[0]['orientation_number']}</ListGroup.Item>
+                      <ListGroup.Item><b>Garbage type: </b>{binInfo[0]['waste_type']}</ListGroup.Item>
+                      <ListGroup.Item><b>Bin type: </b>{binInfo[0]['material']}</ListGroup.Item>
+                    </ListGroup>
+                  </div>
+
+                  {photoUploaded ?
+                    (
+                      photoError ? (
+                        <div>
+                          <p><b>Error with photo.</b></p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p><b>Thanks for your photo.</b></p>
+                        </div>
+                      )
+
                     ) : (
                       <div>
-                        <p><b>Thanks for your photo.</b></p>
+                        <p><b>Help us</b></p>
+                        <p>Take a picture of the bin.</p>
+                        <input accept="image/*" capture="environment" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
+                        <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
                       </div>
-                    )
-  
-                  ) : (
-                    <div>
-                      <p><b>Help us</b></p>
-                      <p>Take a picture of the bin.</p>
-                      <input accept="image/*" capture="environment" type='file' id='file' onChange={e => handleFileSelected(e)} ref={inputFile} style={{ display: 'none' }} />
-                      <Button onClick={() => inputFile.current.click()} variant="success">Upload</Button>{' '}
-                    </div>
-                  )}
-              </div>
-            )
-          
+                    )}
+                </div>
+              )
 
+          )
         )}
+
       </header >
     </div >
   );
